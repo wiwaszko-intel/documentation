@@ -142,11 +142,20 @@ make benchmark-stream-density
 ```
 
 **Default behavior:**
-- Tests until FPS drops below 14.95 target
+- Tests until FPS of any stream drops below its own target FPS from config JSON (`targetFps`); if not set, default `14.95` is used.
 - Uses OOM protection to prevent system crashes
 - Reports maximum sustainable pipeline count
 
 ### Custom Target FPS
+
+Set per-stream target FPS using `lane_config.cameras[].targetFps` in `camera_to_workload_*.json`.
+
+Set `targetFps` based on workload criticality and source FPS.
+
+If `targetFps` is not present for a stream (or is invalid/non-positive), the stream falls back to `TARGET_FPS`.
+
+CLI examples:
+
 ```bash
 # Test for different performance thresholds
 make TARGET_FPS=13.5 benchmark-stream-density
@@ -163,6 +172,8 @@ make PIPELINE_SCRIPT=yolo11n_effnetb0.sh TARGET_FPS=13.5 benchmark-stream-densit
 | `OOM_PROTECTION` | Prevent out-of-memory crashes | `1` (enabled), `0` (disabled) |
 
 > ⚠️ **Warning**: Setting `OOM_PROTECTION=0` may crash your system requiring a hard reboot.
+
+Note: stream-density caches camera-target mappings using `(config_path, file_mtime)` and auto-refreshes when the camera config changes; unit tests for this behavior are in the `performance-tools` repository at `benchmark-scripts/stream_density_test.py`.
 
 ### Expected Output
 ```
@@ -205,6 +216,7 @@ The application is highly configurable via JSON files in the `configs/` director
       {
         "camera_id": "cam1",
         "fileSrc": "sample-media/video1.mp4",              
+        "targetFps": 12.5,
         "workloads": ["items_in_basket", "multi_product_identification"],
         "region_of_interest": {"x": 100, "y": 100, "x2": 800, "y2": 600}
       }
