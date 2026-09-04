@@ -9,7 +9,7 @@
 - Intel hardware (CPU, iGPU, dGPU, NPU)
 - Intel drivers:
   - [Intel GPU drivers](https://dgpu-docs.intel.com/driver/client/overview.html)
-  - [NPU](https://docs.openedgeplatform.intel.com/dev/edge-ai-libraries/dlstreamer/dev_guide/advanced_install/advanced_install_guide_prerequisites.html#prerequisite-2-install-intel-npu-drivers)
+  - [NPU](https://docs.openedgeplatform.intel.com/dev/edge-ai-libraries/dlstreamer/dev_guide/advanced_install/advanced_install_guide_prerequisites.html#optional-prerequisite-2-install-intel-npu-drivers)
 - Sufficient disk space for models, videos, and results
 
 > **Note:** First-time setup downloads AI models, sample videos, and Docker images - this may take 5-15 minutes depending on your internet connection.
@@ -82,16 +82,16 @@ make run-lp CAMERA_STREAM=camera_to_workload_asc_object_detection_classification
 
 ## Step by step instructions
 
-1. Clone the repo with the below command
+1. Clone the repo with the below command:
 
-   ```
+   ```bash
    git clone -b <release-or-tag> --single-branch https://github.com/intel-retail/loss-prevention
    ```
 
-   > Replace <release-or-tag> with the version you want to clone (for example, **v4.0.0**).
+   > Replace <release-or-tag> with the version you want to clone (for example, **release-2026.2.0**).
 
-   ```
-   git clone -b v4.0.0 --single-branch https://github.com/intel-retail/loss-prevention
+   ```bash
+   git clone -b release-2026.2.0 --single-branch https://github.com/intel-retail/loss-prevention
    ```
 
 2. **Run Loss Prevention (Recommended for First Time)**
@@ -143,13 +143,13 @@ make run-lp CAMERA_STREAM=camera_to_workload_asc_object_detection_classification
    CAMERA_STREAM=camera_to_workload_asc_object_detection_classification.json WORKLOAD_DIST=workload_to_pipeline_asc_object_detection_classification_gpu.json make run-lp RENDER_MODE=1
    ```
 
-> **Note:**
->
-> **Display Options**: Add `RENDER_MODE=1` to any command above to see live video with detection boxes. Remove it for headless operation (servers/automation).
->
-> **Choose Your Hardware**: Replace `_gpu` with `_cpu` or `_npu` based on your available hardware. See [Automated Self-Checkout Configurations](./get-started/advanced.md#automated-self-checkout-configurations) for all options.
+   > **Note:**
+   >
+   > **Display Options**: Add `RENDER_MODE=1` to any command above to see live video with detection boxes. Remove it for headless operation (servers/automation).
+   >
+   > **Choose Your Hardware**: Replace `_gpu` with `_cpu` or `_npu` based on your available hardware. See [Automated Self-Checkout Configurations](./get-started/advanced.md#automated-self-checkout-configurations) for all options.
 
-## What You'll See When Working
+## What You will See When Working
 
 ### Loss Prevention Results
 
@@ -169,41 +169,41 @@ make run-lp CAMERA_STREAM=camera_to_workload_asc_object_detection_classification
 - **Processing**: Real-time video analysis at 15-30 FPS
 - **Results**: JSON files appear in `results/` folder within seconds
 
-4. Verify Results
+## Verify Results
 
-   After starting Loss Prevention you will begin to see result files being written into the results/ directory. Here are example outputs from the 3 log files.
+After starting Loss Prevention you will begin to see result files being written into the results/ directory. Here are example outputs from the 3 log files.
 
-   gst-launch\_<time>\_gst.log
+Sample `gst-launch\_<time>\_gst.log` output:
 
-   ```
-   /GstPipeline:pipeline0/GstGvaWatermark:gvawatermark0/GstCapsFilter:capsfilter1: caps = video/x-raw(memory:VASurface), format=(string)RGBA
-   /GstPipeline:pipeline0/GstFPSDisplaySink:fpsdisplaysink0/GstXImageSink:ximagesink0: sync = true
-   Got context from element 'vaapipostproc1': gst.vaapi.Display=context, gst.vaapi.Display=(GstVaapiDisplay)"\(GstVaapiDisplayGLX\)\ vaapidisplayglx0", gst.vaapi.Display.GObject=(GstObject)"\(GstVaapiDisplayGLX\)\ vaapidisplayglx0";
-   Progress: (open) Opening Stream
-   Pipeline is PREROLLED ...
-   Prerolled, waiting for progress to finish...
-   Progress: (connect) Connecting to rtsp://localhost:8554/camera_0
-   Progress: (open) Retrieving server options
-   Progress: (open) Retrieving media info
-   Progress: (request) SETUP stream 0
-   ```
+```text
+/GstPipeline:pipeline0/GstGvaWatermark:gvawatermark0/GstCapsFilter:capsfilter1: caps = video/x-raw(memory:VASurface), format=(string)RGBA
+/GstPipeline:pipeline0/GstFPSDisplaySink:fpsdisplaysink0/GstXImageSink:ximagesink0: sync = true
+Got context from element 'vaapipostproc1': gst.vaapi.Display=context, gst.vaapi.Display=(GstVaapiDisplay)"\(GstVaapiDisplayGLX\)\ vaapidisplayglx0", gst.vaapi.Display.GObject=(GstObject)"\(GstVaapiDisplayGLX\)\ vaapidisplayglx0";
+Progress: (open) Opening Stream
+Pipeline is PREROLLED ...
+Prerolled, waiting for progress to finish...
+Progress: (connect) Connecting to rtsp://localhost:8554/camera_0
+Progress: (open) Retrieving server options
+Progress: (open) Retrieving media info
+Progress: (request) SETUP stream 0
+```
 
-   pipeline<time>\_gst.log
+Sample `pipeline<time>\_gst.log` output:
 
-   ```
-   14.58
-   14.58
-   15.47
-   15.47
-   15.10
-   15.10
-   14.60
-   14.60
-   14.88
-   14.88
-   ```
+```text
+14.58
+14.58
+15.47
+15.47
+15.10
+15.10
+14.60
+14.60
+14.88
+14.88
+```
 
-   r<time>\_gst.jsonl
+Sample `r<time>\_gst.jsonl` output:
 
 ```json
 {
@@ -276,19 +276,19 @@ make run-lp CAMERA_STREAM=camera_to_workload_asc_object_detection_classification
 
 > **Note:** If unable to see results folder or files, please refer to the [Troubleshooting](#troubleshooting) section for more details.
 
-5.  Stop the containers:
+## Stop the containers
 
-    When pre-built images are pulled-
+   When pre-built images are pulled-
 
-    ```bash
-    make down-lp
-    ```
+   ```bash
+   make down-lp
+   ```
 
-    When images are built locally-
+   When images are built locally-
 
-    ```bash
-    make down-lp REGISTRY=false
-    ```
+   ```bash
+   make down-lp REGISTRY=false
+   ```
 
 ## Troubleshooting
 
@@ -298,6 +298,7 @@ make run-lp CAMERA_STREAM=camera_to_workload_asc_object_detection_classification
     ```sh
       docker ps -a
     ```
+
   - Verify Docker containers if it is running or no errors in container logs
 
   ```bash
